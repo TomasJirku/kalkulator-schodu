@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulačka schodů dle ČSN 73 4130 - Zdarma online nástroj</title>
+    <meta name="description" content="Bezplatná online kalkulačka pro výpočet a návrh schodiště podle české normy ČSN 73 4130. Včetně vizualizace a vřetenových stupňů.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .ad-banner-top {
+            background: #fff;
+            border: 2px dashed #d1d5db;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem auto;
+            max-width: 728px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .ad-sidebar {
+                display: none;
+            }
+        }
+        
+        .ad-sidebar {
+            background: #fff;
+            border: 2px dashed #d1d5db;
+            padding: 1rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            min-height: 600px;
+            position: sticky;
+            top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calculator-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        
+        input, select {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #2563eb;
+        }
+        
+        .results {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-ok {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .status-error {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        .canvas-container {
+            margin-top: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .ad-banner-bottom {
+            background: #fff;
+            border: 2px dashed #d1d5db;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem auto;
+            max-width: 728px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        footer {
+            background: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚙️ Kalkulačka schodů dle ČSN 73 4130</h1>
+        <p>Profesionální návrh schodiště online zdarma</p>
+    </div>
+    
+    <div class="ad-banner-top">
+        <div>
+            📢 Zde bude reklama 728x90<br>
+            <small>Google AdSense nebo jiná reklamní síť</small>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="ad-sidebar">
+                <div>
+                    📢 Zde bude<br>
+                    postranní reklama<br>
+                    300x600<br><br>
+                    <small>Google AdSense<br>nebo jiná síť</small>
+                </div>
+            </div>
+            
+            <div>
+                <div class="calculator-section">
+                    <h2 style="margin-bottom: 1rem;">Vstupní parametry</h2>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Celková výška (mm)</label>
+                            <input type="number" id="totalHeight" value="2800" step="10">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Šířka ramene (mm)</label>
+                            <input type="number" id="stairWidth" value="1000" step="50">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Počet stupňů</label>
+                            <input type="number" id="steps" value="16" min="3" max="30">
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="useWinding">
+                        <label style="margin: 0;">Zatočit schodiště</label>
+                    </div>
+                    
+                    <div id="windingOptions" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label>Max. délka přímé části (mm)</label>
+                                <input type="number" id="maxLength" value="3000" step="100">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Počet vřetenových stupňů</label>
+                                <input type="number" id="windingSteps" value="5" min="3">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Úhel zatočení</label>
+                                <select id="turnAngle">
+                                    <option value="90">90°</option>
+                                    <option value="180">180°</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()">Vypočítat schodiště</button>
+                    
+                    <div class="results" id="results" style="display: none;"></div>
+                    
+                    <div class="info-box">
+                        <strong>ℹ️ Požadavky ČSN 73 4130:</strong><br>
+                        • Výška stupně max 190 mm<br>
+                        • Šířka stupně min 250 mm<br>
+                        • Pochodlnost 620-640 mm (optimálně 630 mm)<br>
+                        • Šířka ramene min 900 mm<br>
+                        • Vřetenové stupně: min 100 mm na užší straně
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="canvas" width="1000" height="600"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ad-banner-bottom">
+            <div>
+                📢 Zde bude reklama 728x90<br>
+                <small>Google AdSense nebo jiná reklamní síť</small>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Kalkulačka schodů | Vytvořeno pro profesionální návrh schodišť</p>
+        <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+            Nástroj pro výpočet podle české normy ČSN 73 4130
+        </p>
+    </footer>
+
+    <script>
+        document.getElementById('useWinding').addEventListener('change', function() {
+            document.getElementById('windingOptions').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        function calculate() {
+            const totalHeight = parseFloat(document.getElementById('totalHeight').value);
+            const stairWidth = parseFloat(document.getElementById('stairWidth').value);
+            const steps = parseInt(document.getElementById('steps').value);
+            const useWinding = document.getElementById('useWinding').checked;
+            const maxLength = parseFloat(document.getElementById('maxLength').value);
+            const windingSteps = parseInt(document.getElementById('windingSteps').value);
+            const turnAngle = parseInt(document.getElementById('turnAngle').value);
+            
+            const stepHeight = totalHeight / steps;
+            const stepDepth = 630 - 2 * stepHeight;
+            const straightLength = stepDepth * (steps - 1);
+            const pochodlnost = 2 * stepHeight + stepDepth;
+            
+            const checks = {
+                stepHeight: stepHeight <= 190,
+                stepDepth: stepDepth >= 250,
+                pochodlnost: pochodlnost >= 620 && pochodlnost <= 640,
+                stairWidth: stairWidth >= 900
+            };
+            
+            const needsWinding = useWinding && straightLength > maxLength;
+            
+            let html = '<h3 style="margin-bottom: 1rem;">Výsledky výpočtu</h3>';
+            
+            html += `<div class="result-item">
+                <span>Výška stupně:</span>
+                <span class="${checks.stepHeight ? 'status-ok' : 'status-error'}">
+                    ${stepHeight.toFixed(1)} mm ${checks.stepHeight ? '✓' : '✗'}
+                </span>
+            </div>`;
+            
+            html += `<div class="result-item">
+                <span>Šířka stupně:</span>
+                <span class="${checks.stepDepth ? 'status-ok' : 'status-error'}">
+                    ${stepDepth.toFixed(1)} mm ${checks.stepDepth ? '✓' : '✗'}
+                </span>
+            </div>`;
+            
+            html += `<div class="result-item">
+                <span>Pochodlnost (2h+s):</span>
+                <span class="${checks.pochodlnost ? 'status-ok' : 'status-error'}">
+                    ${pochodlnost.toFixed(1)} mm ${checks.pochodlnost ? '✓' : '✗'}
+                </span>
+            </div>`;
+            
+            html += `<div class="result-item">
+                <span>Celková délka přímá:</span>
+                <span>${straightLength.toFixed(0)} mm</span>
+            </div>`;
+            
+            if (needsWinding) {
+                const straightSteps = steps - windingSteps;
+                const straightPartLength = stepDepth * straightSteps;
+                const innerRadius = 150;
+                const outerRadius = innerRadius + stairWidth;
+                const anglePerStep = (turnAngle * Math.PI / 180) / windingSteps;
+                const walkingLineRadius = innerRadius + (stairWidth * 2 / 3);
+                const arcLengthPerStep = walkingLineRadius * anglePerStep;
+                
+                html += `<div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #e5e7eb;">
+                    <strong>Vřetenové stupně:</strong><br>
+                    Přímých: ${straightSteps}, Vřetenových: ${windingSteps}<br>
+                    Šířka na chůzné linii: ${arcLengthPerStep.toFixed(0)} mm<br>
+                    Vnitřní poloměr: ${innerRadius} mm
+                </div>`;
+                
+                drawWindingStairs(straightSteps, windingSteps, straightPartLength, stepDepth, 
+                                 innerRadius, outerRadius, anglePerStep, stairWidth, turnAngle);
+            } else {
+                drawStraightStairs(steps, stepDepth, straightLength, stairWidth);
+            }
+            
+            const allValid = Object.values(checks).every(v => v);
+            html += `<div style="margin-top: 1rem; padding: 1rem; background: ${allValid ? '#d1fae5' : '#fee2e2'}; border-radius: 6px; text-align: center; font-weight: 600;">
+                ${allValid ? '✓ Schodiště splňuje ČSN 73 4130' : '✗ Schodiště nesplňuje některé požadavky'}
+            </div>`;
+            
+            document.getElementById('results').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function drawStraightStairs(steps, stepDepth, straightLength, stairWidth) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 0.15;
+            const margin = 50;
+            
+            const scaledStepDepth = stepDepth * scale;
+            const scaledWidth = stairWidth * scale;
+            const scaledLength = straightLength * scale;
+            
+            ctx.fillStyle = '#e0f2fe';
+            ctx.fillRect(margin, margin, scaledLength, scaledWidth);
+            ctx.strokeStyle = '#0284c7';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(margin, margin, scaledLength, scaledWidth);
+            
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 3]);
+            for (let i = 0; i <= steps; i++) {
+                const x = margin + i * scaledStepDepth;
+                ctx.beginPath();
+                ctx.moveTo(x, margin);
+                ctx.lineTo(x, margin + scaledWidth);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#1f2937';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Délka: ${straightLength.toFixed(0)} mm`, margin + scaledLength / 2, margin - 20);
+        }
+        
+        function drawWindingStairs(straightSteps, windingSteps, straightPartLength, stepDepth,
+                                   innerRadius, outerRadius, anglePerStep, stairWidth, turnAngle) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 0.12;
+            const margin = 100;
+            
+            const scaledStepDepth = stepDepth * scale;
+            const scaledWidth = stairWidth * scale;
+            const scaledStraightLength = straightPartLength * scale;
+            const scaledInnerRadius = innerRadius * scale;
+            const scaledOuterRadius = outerRadius * scale;
+            
+            const originX = margin;
+            const originY = margin;
+            const straightEndX = originX + scaledStraightLength;
+            const centerX = straightEndX;
+            const centerY = originY + scaledWidth + scaledInnerRadius;
+            
+            ctx.fillStyle = '#e0f2fe';
+            ctx.fillRect(originX, originY, scaledStraightLength, scaledWidth);
+            ctx.strokeStyle = '#0284c7';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(originX, originY, scaledStraightLength, scaledWidth);
+            
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= straightSteps; i++) {
+                const x = originX + i * scaledStepDepth;
+                ctx.beginPath();
+                ctx.moveTo(x, originY);
+                ctx.lineTo(x, originY + scaledWidth);
+                ctx.stroke();
+            }
+            
+            for (let i = 0; i < windingSteps; i++) {
+                const startAngle = -Math.PI / 2 + i * anglePerStep;
+                const endAngle = -Math.PI / 2 + (i + 1) * anglePerStep;
+                
+                ctx.fillStyle = i % 2 === 0 ? '#dbeafe' : '#bfdbfe';
+                ctx.strokeStyle = '#0284c7';
+                ctx.lineWidth = 2;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, scaledInnerRadius, startAngle, endAngle);
+                ctx.arc(centerX, centerY, scaledOuterRadius, endAngle, startAngle, true);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#1f2937';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Přímá část: ${straightSteps} stupňů`, originX + scaledStraightLength / 2, originY - 20);
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
